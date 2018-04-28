@@ -5,14 +5,24 @@ public class Reader{
     File dir;
     File[] list;
     int indexOfCurrentFile = 0;
+    int n;
     Scanner currentFile;
     ArrayList<String> buffer = new ArrayList<String>();
-    public Reader(String dir){
+    /**
+     * Dir is the directory that the files live in
+     * n is the buffer size
+     */
+    public Reader(String dir, int n){
         this.dir = new File(dir);
         this.list = this.dir.listFiles();
+        this.n = n;
         initBuffer();
     }
 
+    /**
+     * called when initilizing a new file
+     * fills buffer with first n words
+     */
     public void initBuffer(){
         buffer.clear();
         try{
@@ -20,14 +30,19 @@ public class Reader{
         }catch(FileNotFoundException e){
             System.out.println("File not found");
         }
-        for(int i = 0 ; i < 6; i++){
+        for(int i = 0 ; i < n; i++){
             buffer.add(currentFile.next());
         }
     }
-    //must get file before getNext, getnext will move the cursor
+    /**
+     * Returns the next 6 set from the input
+     * will walk accoss all files 
+     * at the end of each file it will re init the 
+     * buffer. and increment the file counter
+     */
     public String getNext(){
         StringBuilder string = new StringBuilder();
-        for(int i = 0 ; i < 6; i++){
+        for(int i = 0 ; i < n; i++){
             string.append(buffer.get(i));
         }
 
@@ -43,14 +58,21 @@ public class Reader{
 
         return string.toString();
     }
-
+    /**
+     * Get next can be called if this is ture;
+     */
     public boolean hasNext(){
         if(indexOfCurrentFile >= list.length){
             return false;
         }
         return true;
     }
-
+    /**
+     * Returns the current file we are reading
+     * note this should be called before getnext 
+     * because getnext will push the file pointer to
+     * the next file.
+     */
     public String getCurrentFileName(){
         return list[indexOfCurrentFile].getName();
     }
